@@ -6,57 +6,73 @@
 # permitted in any medium without royalty provided the copyright notice and this
 # notice are preserved.
 
-include /usr/share/cdbs/1/rules/buildcore.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
+export DH_VERBOSE=1
+#export PYBUILD_NAME=foo
 
-DEB_COMPRESS_EXCLUDE = .png .svg
+%:
+	dh $@ --with python2
 
-DEB_ORIG_URI = http://intertwingly.net/code/venus/
-DEB_ORIG_DIRECTORY = $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION)
-DEB_ORIG_FILENAME = $(DEB_SOURCE_PACKAGE)_$(DEB_UPSTREAM_VERSION).orig.tar.gz
-DEB_REPOS_VERSION = $(shell echo $(DEB_UPSTREAM_VERSION) | sed -r "s/.*~bzr//")
+#override_dh_auto_build:
+#	help2man -N -n "an aggregate feed generator" --version-string="planet 1" ./planet.py > planet.1
 
-# @@ workaround for #486848
-binary-arch binary-indep: build
+override_dh_installdocs:
+	dh_installdocs
+	cp -a docs debian/planet-venus/usr/share/doc/planet-venus/html
 
-cleanbuilddir::
-	sed -i -e "s/\"$(DEB_UPSTREAM_VERSION)\"/@version@/" planet.py
+override_dh_auto_install:
+	cp planet.py debian/planet-venus/usr/bin/planet
 
-post-patches::
-	sed -i -e "s/@version@/\"$(DEB_UPSTREAM_VERSION)\"/" planet.py
+# include /usr/share/cdbs/1/rules/buildcore.mk
+# include /usr/share/cdbs/1/rules/debhelper.mk
+# include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
-clean::
-	find . -name '*\.py[co]' -delete
+# DEB_COMPRESS_EXCLUDE = .png .svg
 
-# @@ The bundled feedparser.py is a pre-release version so we can't depend on
-# @@ the standard packaged version. The other three bundled modules might be
-# @@ nice as external packages.
+# DEB_ORIG_URI = http://intertwingly.net/code/venus/
+# DEB_ORIG_DIRECTORY = $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION)
+# DEB_ORIG_FILENAME = $(DEB_SOURCE_PACKAGE)_$(DEB_UPSTREAM_VERSION).orig.tar.gz
+# DEB_REPOS_VERSION = $(shell echo $(DEB_UPSTREAM_VERSION) | sed -r "s/.*~bzr//")
 
-common-install-prehook-impl::
-	chmod 755 planet.py
-	help2man -N -n "an aggregate feed generator" ./planet.py > planet.1
-	cp -R docs debian/planet-venus/usr/share/doc/planet-venus/html
-	cp -R examples debian/planet-venus/usr/share/planet-venus/example
-	chmod 755 debian/planet-venus/usr/share/planet-venus/example/filters/guess-language/guess-language.py
-	chmod 755 debian/planet-venus/usr/share/planet-venus/example/filters/guess-language/trigram.py
-	cp -R filters debian/planet-venus/usr/share/planet-venus/filter
-	cp -R planet.py debian/planet-venus/usr/bin/planet
-	cp -R themes debian/planet-venus/usr/share/planet-venus/theme
-	rm -f debian/planet-venus/usr/share/planet-venus/theme/diveintomark/LICENCE
-	cp -R planet debian/planet-venus/usr/share/python-support/planet-venus
-	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/htmltmpl.py
-	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/html5lib
-	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/httplib2
-	cp -R debian/planet.ini debian/planet-venus/usr/share/planet-venus/example/debian.ini
-	cp debian/binary.lintian-overrides debian/planet-venus/usr/share/lintian/overrides/planet-venus
+# # @@ workaround for #486848
+# binary-arch binary-indep: build
 
-binary-install/planet-venus::
-	dh_pysupport -pplanet-venus -X example -X filter
+# cleanbuilddir::
+# 	sed -i -e "s/\"$(DEB_UPSTREAM_VERSION)\"/@version@/" planet.py
 
-# @@ only works from source directory, see #494141
-.PHONY: get-orig-source
-get-orig-source:
-	bzr export -r $(DEB_REPOS_VERSION) $(DEB_ORIG_DIRECTORY) $(DEB_ORIG_URI)
-	tar -czf $(DEB_ORIG_FILENAME) $(DEB_ORIG_DIRECTORY)
-	rm -fr $(DEB_ORIG_DIRECTORY)
+# post-patches::
+# 	sed -i -e "s/@version@/\"$(DEB_UPSTREAM_VERSION)\"/" planet.py
+
+# clean::
+# 	find . -name '*\.py[co]' -delete
+
+# # @@ The bundled feedparser.py is a pre-release version so we can't depend on
+# # @@ the standard packaged version. The other three bundled modules might be
+# # @@ nice as external packages.
+
+# common-install-prehook-impl::
+# 	chmod 755 planet.py
+# 	help2man -N -n "an aggregate feed generator" ./planet.py > planet.1
+# 	cp -R docs debian/planet-venus/usr/share/doc/planet-venus/html
+# 	cp -R examples debian/planet-venus/usr/share/planet-venus/example
+# 	chmod 755 debian/planet-venus/usr/share/planet-venus/example/filters/guess-language/guess-language.py
+# 	chmod 755 debian/planet-venus/usr/share/planet-venus/example/filters/guess-language/trigram.py
+# 	cp -R filters debian/planet-venus/usr/share/planet-venus/filter
+# 	cp -R planet.py debian/planet-venus/usr/bin/planet
+# 	cp -R themes debian/planet-venus/usr/share/planet-venus/theme
+# 	rm -f debian/planet-venus/usr/share/planet-venus/theme/diveintomark/LICENCE
+# 	cp -R planet debian/planet-venus/usr/share/python-support/planet-venus
+# 	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/htmltmpl.py
+# 	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/html5lib
+# 	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/httplib2
+# 	cp -R debian/planet.ini debian/planet-venus/usr/share/planet-venus/example/debian.ini
+# 	cp debian/binary.lintian-overrides debian/planet-venus/usr/share/lintian/overrides/planet-venus
+
+# binary-install/planet-venus::
+# 	dh_pysupport -pplanet-venus -X example -X filter
+
+# # @@ only works from source directory, see #494141
+# .PHONY: get-orig-source
+# get-orig-source:
+# 	bzr export -r $(DEB_REPOS_VERSION) $(DEB_ORIG_DIRECTORY) $(DEB_ORIG_URI)
+# 	tar -czf $(DEB_ORIG_FILENAME) $(DEB_ORIG_DIRECTORY)
+# 	rm -fr $(DEB_ORIG_DIRECTORY)

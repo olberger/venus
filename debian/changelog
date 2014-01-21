@@ -1,3 +1,9 @@
+planet-venus (0~git9de2109-1) UNRELEASED; urgency=low
+
+  * New upstream version.
+
+ -- Olivier Berger <obergix@debian.org>  Tue, 21 Jan 2014 15:36:02 +0100
+
 planet-venus (0~bzr116-2) UNRELEASED; urgency=low
 
   * Use canonical URIs for Vcs-* fields.
