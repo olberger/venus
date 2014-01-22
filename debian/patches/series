@@ -1,0 +1,3 @@
+html5lib-no_XHTMLSerializer.patch
+summary_detail-fix.patch
+django-settings-config.patch
