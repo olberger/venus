@@ -4,3 +4,4 @@ django-settings-config.patch
 processor-import.patch
 removevendordeps.patch
 fixundeclarednamespaces.patch
+datetimeintmpl.patch
