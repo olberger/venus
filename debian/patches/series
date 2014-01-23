@@ -3,3 +3,4 @@ summary_detail-fix.patch
 django-settings-config.patch
 processor-import.patch
 removevendordeps.patch
+fixundeclarednamespaces.patch
