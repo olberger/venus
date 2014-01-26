@@ -65,3 +65,15 @@ Last-Update: <YYYY-MM-DD>
          html = parser.parse(xdiv % detail.value, encoding="utf-8")
          for body in html.documentElement.childNodes:
              if body.nodeType != Node.ELEMENT_NODE: continue
+diff --git a/filters/html2xhtml.plugin b/filters/html2xhtml.plugin
+index 3ab7a8c..3840c43 100644
+--- a/filters/html2xhtml.plugin
++++ b/filters/html2xhtml.plugin
+@@ -1,6 +1,6 @@
+ import sys
+ import html5lib
+-tree=html5lib.treebuilders.dom.TreeBuilder
++tree=html5lib.treebuilders.getTreeBuilder('dom')
+ parser = html5lib.html5parser.HTMLParser(tree=tree)
+ document = parser.parse(sys.stdin)
+ sys.stdout.write(document.toxml("utf-8"))
