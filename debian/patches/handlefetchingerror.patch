@@ -1,0 +1,40 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ planet-venus (0~git9de2109-1) UNRELEASED; urgency=low
+ .
+   * New upstream version.
+Author: Olivier Berger <obergix@debian.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- planet-venus-0~git9de2109.orig/planet/spider.py
++++ planet-venus-0~git9de2109/planet/spider.py
+@@ -286,7 +286,11 @@ def writeCache(feed_uri, feed_info, data
+     if not os.path.exists(sources): os.makedirs(sources)
+     xdoc=minidom.parseString('''<feed xmlns:planet="%s"
+       xmlns="http://www.w3.org/2005/Atom"/>\n''' % planet.xmlns)
+-    reconstitute.source(xdoc.documentElement,data.feed,data.bozo,data.version)
++    if data.get('version'):
++      format = data.version
++    else:
++      format = ''
++    reconstitute.source(xdoc.documentElement,data.feed,data.bozo,format)
+     write(xdoc.toxml().encode('utf-8'), filename(sources, feed_uri))
+     xdoc.unlink()
+ 
