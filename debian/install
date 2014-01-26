@@ -1,3 +1,3 @@
 filters/* usr/share/planet-venus/filter/
 themes/* usr/share/planet-venus/theme/
-debian/planet.ini usr/share/planet-venus/example/debian.ini
+debian/debian.ini usr/share/planet-venus/example/
