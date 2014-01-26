@@ -7,3 +7,4 @@ fixundeclarednamespaces.patch
 datetimeintmpl.patch
 testids.patch
 updated.patch
+command-improvement.patch
