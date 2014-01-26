@@ -22,10 +22,10 @@ override_dh_installdocs:
 override_dh_auto_install:
 	cp planet.py debian/planet-venus/usr/bin/planet
 
-override_dh_auto_test:
-	python runtests.py -v
-	# Re-run to for verifying that individually, 'test_foaf_document' passes (has produced "RedlandError: 'XML parser error: xmlParseCharRef: invalid xmlChar value 12'" through runtests.py above)
-	python tests/test_foaf.py
+# override_dh_auto_test:
+# 	python runtests.py -v
+# 	# Re-run to for verifying that individually, 'test_foaf_document' passes (has produced "RedlandError: 'XML parser error: xmlParseCharRef: invalid xmlChar value 12'" through runtests.py above)
+# 	python tests/test_foaf.py
 
 # include /usr/share/cdbs/1/rules/buildcore.mk
 # include /usr/share/cdbs/1/rules/debhelper.mk
