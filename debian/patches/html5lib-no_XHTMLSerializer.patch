@@ -23,27 +23,55 @@ Forwarded: <no|not-needed|url proving that it has been forwarded>
 Reviewed-By: <name and email of someone who approved the patch>
 Last-Update: <YYYY-MM-DD>
 
---- planet-venus-0~git9de2109.orig/planet/scrub.py
-+++ planet-venus-0~git9de2109/planet/scrub.py
-@@ -138,14 +138,13 @@ def scrub(feed_uri, data):
-                 node['type']='text/html'
+diff --git a/planet/scrub.py b/planet/scrub.py
+index fef5c22..bd707f1 100644
+--- a/planet/scrub.py
++++ b/planet/scrub.py
+@@ -128,24 +128,23 @@ def scrub(feed_uri, data):
+                 node['value'] = feedparser._resolveRelativeURIs(
+                     node.value, node.base, 'utf-8', node.type)
  
-             if not doc:
+-            # Run this through HTML5's sanitizer
+-            doc = None
+-            if 'xhtml' in node['type']:
+-              try:
+-                from xml.dom import minidom
+-                doc = minidom.parseString(node['value'])
+-              except:
+-                node['type']='text/html'
+-
+-            if not doc:
 -              from html5lib import html5parser, treebuilders
 -              p=html5parser.HTMLParser(tree=treebuilders.getTreeBuilder('dom'))
-+              from html5lib import html5parser, treebuilders, sanitizer
-+              p=html5parser.HTMLParser(tree=treebuilders.getTreeBuilder('dom'), tokenizer=sanitizer.HTMLSanitizer)
-               doc = p.parseFragment(node['value'], encoding='utf-8')
- 
-             from html5lib import treewalkers, serializer
+-              doc = p.parseFragment(node['value'], encoding='utf-8')
+-
+-            from html5lib import treewalkers, serializer
 -            from html5lib.filters import sanitizer
 -            walker = sanitizer.Filter(treewalkers.getTreeWalker('dom')(doc))
 -            xhtml = serializer.XHTMLSerializer(inject_meta_charset = False)
-+            walker = treewalkers.getTreeWalker('dom')(doc)
-+            xhtml = serializer.HTMLSerializer(inject_meta_charset = False)
-             tree = xhtml.serialize(walker, encoding='utf-8')
- 
-             node['value'] = ''.join([str(token) for token in tree])
+-            tree = xhtml.serialize(walker, encoding='utf-8')
+-
+-            node['value'] = ''.join([str(token) for token in tree])
++            if node['value']:
++                # Run this through HTML5's sanitizer
++                doc = None
++                if 'xhtml' in node['type']:
++                    try:
++                        from xml.dom import minidom
++                        doc = minidom.parseString(node['value'])
++                    except:
++                        node['type']='text/html'
++
++                if not doc:
++                    from html5lib import html5parser, treebuilders, sanitizer
++                    p=html5parser.HTMLParser(tree=treebuilders.getTreeBuilder('dom'), tokenizer=sanitizer.HTMLSanitizer)
++                    doc = p.parseFragment(node['value'], encoding='utf-8')
++
++                from html5lib import treewalkers, serializer
++                walker = treewalkers.getTreeWalker('dom')(doc)
++                xhtml = serializer.HTMLSerializer(inject_meta_charset = False)
++                tree = xhtml.serialize(walker, encoding='utf-8')
++                node['value'] = ''.join([str(token) for token in tree])
 --- a/planet/reconstitute.py
 +++ b/planet/reconstitute.py
 @@ -16,8 +16,7 @@ Todo:
