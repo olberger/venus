@@ -108,7 +108,7 @@ index 26191bb..2f2e841 100755
          elif arg == "-o" or arg == "--offline":
              offline = 1
          elif arg == "-n" or arg == "--only-if-new":
-@@ -51,17 +112,27 @@ if __name__ == "__main__":
+@@ -51,17 +112,25 @@ if __name__ == "__main__":
          elif arg == "--no-publish":
              no_publish = 1
          elif arg.startswith("-"):
@@ -135,8 +135,6 @@ index 26191bb..2f2e841 100755
          planet.getLogger('DEBUG',config.log_format())
 +    elif verbose:
 +        planet.getLogger('INFO',config.log_format())
-+    else:
-+        planet.getLogger('WARNING',config.log_format())
  
      if not offline:
          from planet import spider
