@@ -21,6 +21,9 @@ override_dh_installdocs:
 
 override_dh_auto_install:
 	cp planet.py debian/planet-venus/usr/bin/planet
+	cp admin_cb.py debian/planet-venus/usr/share/planet-venus/cgi-bin/
+	cp favicon.py debian/planet-venus/usr/share/planet-venus/tools
+	cp publish.py debian/planet-venus/usr/share/planet-venus/tools
 
 # override_dh_auto_test:
 # 	python runtests.py -v
