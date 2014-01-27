@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
 # Copyright 2009, Noah Slater <nslater@tumbolia.org>
+# Copyright 2014, Olivier Berger <obergix@debian.org>
 
 # Copying and distribution of this file, with or without modification, are
 # permitted in any medium without royalty provided the copyright notice and this
 # notice are preserved.
 
 export DH_VERBOSE=1
-#export PYBUILD_NAME=foo
 
 %:
 	dh $@ --with python2
@@ -22,61 +22,20 @@ override_dh_installdocs:
 override_dh_auto_install:
 	cp planet.py debian/planet-venus/usr/bin/planet
 	cp admin_cb.py debian/planet-venus/usr/share/planet-venus/cgi-bin/
+	cp expunge.py debian/planet-venus/usr/share/planet-venus/tools
 	cp favicon.py debian/planet-venus/usr/share/planet-venus/tools
 	cp publish.py debian/planet-venus/usr/share/planet-venus/tools
+	cp spider.py debian/planet-venus/usr/share/planet-venus/tools
+	cp splice.py debian/planet-venus/usr/share/planet-venus/tools
+
+override_dh_fixperms:
+	dh_fixperms
+	find debian/planet-venus/usr/share/pyshared/planet/ -type f -name '*.py' -print0 2>/dev/null | xargs -0r chmod 644
 
 # override_dh_auto_test:
 # 	python runtests.py -v
 # 	# Re-run to for verifying that individually, 'test_foaf_document' passes (has produced "RedlandError: 'XML parser error: xmlParseCharRef: invalid xmlChar value 12'" through runtests.py above)
 # 	python tests/test_foaf.py
-
-# include /usr/share/cdbs/1/rules/buildcore.mk
-# include /usr/share/cdbs/1/rules/debhelper.mk
-# include /usr/share/cdbs/1/rules/simple-patchsys.mk
-
-# DEB_COMPRESS_EXCLUDE = .png .svg
-
-# DEB_ORIG_URI = http://intertwingly.net/code/venus/
-# DEB_ORIG_DIRECTORY = $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION)
-# DEB_ORIG_FILENAME = $(DEB_SOURCE_PACKAGE)_$(DEB_UPSTREAM_VERSION).orig.tar.gz
-# DEB_REPOS_VERSION = $(shell echo $(DEB_UPSTREAM_VERSION) | sed -r "s/.*~bzr//")
-
-# # @@ workaround for #486848
-# binary-arch binary-indep: build
-
-# cleanbuilddir::
-# 	sed -i -e "s/\"$(DEB_UPSTREAM_VERSION)\"/@version@/" planet.py
-
-# post-patches::
-# 	sed -i -e "s/@version@/\"$(DEB_UPSTREAM_VERSION)\"/" planet.py
-
-# clean::
-# 	find . -name '*\.py[co]' -delete
-
-# # @@ The bundled feedparser.py is a pre-release version so we can't depend on
-# # @@ the standard packaged version. The other three bundled modules might be
-# # @@ nice as external packages.
-
-# common-install-prehook-impl::
-# 	chmod 755 planet.py
-# 	help2man -N -n "an aggregate feed generator" ./planet.py > planet.1
-# 	cp -R docs debian/planet-venus/usr/share/doc/planet-venus/html
-# 	cp -R examples debian/planet-venus/usr/share/planet-venus/example
-# 	chmod 755 debian/planet-venus/usr/share/planet-venus/example/filters/guess-language/guess-language.py
-# 	chmod 755 debian/planet-venus/usr/share/planet-venus/example/filters/guess-language/trigram.py
-# 	cp -R filters debian/planet-venus/usr/share/planet-venus/filter
-# 	cp -R planet.py debian/planet-venus/usr/bin/planet
-# 	cp -R themes debian/planet-venus/usr/share/planet-venus/theme
-# 	rm -f debian/planet-venus/usr/share/planet-venus/theme/diveintomark/LICENCE
-# 	cp -R planet debian/planet-venus/usr/share/python-support/planet-venus
-# 	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/htmltmpl.py
-# 	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/html5lib
-# 	rm -fr debian/planet-venus/usr/share/python-support/planet-venus/planet/vendor/httplib2
-# 	cp -R debian/planet.ini debian/planet-venus/usr/share/planet-venus/example/debian.ini
-# 	cp debian/binary.lintian-overrides debian/planet-venus/usr/share/lintian/overrides/planet-venus
-
-# binary-install/planet-venus::
-# 	dh_pysupport -pplanet-venus -X example -X filter
 
 # Much borrowed from https://wiki.debian.org/onlyjob/get-orig-source :
 
@@ -86,13 +45,13 @@ VER ?= $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m
 
 .PHONY: get-orig-source
 
-get-orig-source: $(PKG)_$(VER)$(DTYPE).orig.tar.xz $(info I: $(PKG)_$(VER)$(DTYPE))
+get-orig-source: $(PKG)_$(VER)$(DTYPE).orig.tar.xz
 	@
 
 ## checkout from git (add "git" to Build-Depends)
 UURL = git://github.com/rubys/venus.git
 UDATE = $(shell date --rfc-3339=seconds --date='TZ="UTC" $(shell echo $(VER) | perl -ne 'print "$$1-$$2-$$3" if m/\+(?:git|svn|hg)(\d{4})(\d{2})(\d{2})/')')
-$(PKG)_$(VER)$(DTYPE).orig.tar.xz: $(info I: UDATE=$(UDATE))
+$(PKG)_$(VER)$(DTYPE).orig.tar.xz:
 	$(if $(wildcard $(PKG)-$(VER)),$(error $(PKG)-$(VER) exist, aborting..))
 	@echo "# Downloading..."
 	git clone $(UURL) $(PKG)-$(VER) \

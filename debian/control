@@ -3,6 +3,7 @@ Section: python
 Priority: extra
 Maintainer: Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>
 Standards-Version: 3.9.5
+Uploaders: Olivier Berger <obergix@debian.org>
 Build-Depends: debhelper (>= 7.2.11)
 Build-Depends-Indep: help2man, python-support (>= 0.6.4), python
 Homepage: http://www.intertwingly.net/code/venus/

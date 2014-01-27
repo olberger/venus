@@ -60,6 +60,7 @@ License: PSF-2
 
 Files: debian/*
 Copyright: Copyright 2009, Noah Slater <nslater@tumbolia.org>
+           Copyright 2014, Olivier Berger <obergix@debian.org>
 License: GAP
  Copying and distribution of this package, with or without modification, are
  permitted in any medium without royalty provided the copyright notice and this
