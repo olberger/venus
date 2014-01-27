@@ -1,3 +1,5 @@
+Description: Add additional options and features
+
 diff --git a/planet.py b/planet.py
 index 26191bb..2f2e841 100755
 --- a/planet.py
